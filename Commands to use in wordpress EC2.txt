@@ -1,0 +1,15 @@
+sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+sudo yum install -y httpd 
+systemctl restart httpd
+chkconfig httpd on
+chown -R ec2-user:ec2-user /var/www/html
+mkdir /var/www/html/wordpress
+echo "$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone).[EFS_ID].efs.ap-northeast-2.amazonaws.com:/   /var/www/html/wordpress   nfs4    defaults" >> /etc/fstab
+mount -a
+wget https://wordpress.org/latest.tar.gz
+tar -xzf latest.tar.gz
+cp wordpress /var/www/html -r 
+chown  ec2-user /var/www/html/wordpress
+chmod -R o+r /var/www/html/wordpress
+(wp-config를 /home/ec2-user로 복사)
+cp wp-config.php /var/www/html/wordpress
